@@ -1,0 +1,156 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// 양방향 연결리스트
+struct Node {
+	char s[50]; // 문자열
+	Node* next;
+	Node* previous;
+}typedef Node;
+
+Node* pushback(Node* head) {
+	Node* add = (Node*)malloc(sizeof(Node));
+	char str[50];
+	add->previous = NULL;
+	add->next = NULL;
+	printf("문자열 입력:");
+	scanf("%s", str);
+	strcpy(add->s, str);
+
+	if (head == NULL) {
+		head = add;
+	}
+	else {
+		Node* tmp;
+		for (tmp = head; tmp->next != NULL; tmp = tmp->next);
+		tmp->next = add;
+		add->previous = tmp;
+	}
+	return head;
+}
+
+void show(Node* head) {
+	Node* tmp;
+	for (tmp = head; tmp != NULL; tmp = tmp->next)
+		printf("%s\n", tmp->s);
+}
+
+void backshow(Node* head) {
+	Node* tmp;
+	for (tmp = head; tmp->next != NULL; tmp = tmp->next);
+	for (; tmp != NULL; tmp = tmp->previous)
+		printf("%s\n", tmp->s);
+}
+
+Node* insert(Node* head) {
+	int index;
+	char str[50];
+	printf("몇번째에 삽입?:");
+	scanf("%d", &index);
+	printf("문자열 입력:");
+	scanf("%s", str);
+	Node* add = (Node*)malloc(sizeof(Node));
+	add->next = NULL;
+	add->previous = NULL;
+	strcpy(add->s, str);
+
+	if (index == 0) {
+		add->next = head;
+		head->previous = add;
+		head = add;
+	}
+	else {
+		Node* tmp = head;
+		for (int i = 0; i < index; i++)
+			tmp = tmp->next;
+		add->next = tmp;
+		tmp->previous = add;
+
+		Node* tmp2 = head;
+		for (int i = 0; i < index - 1; i++)
+			tmp2 = tmp2->next;
+		tmp2->next = add;
+		add->previous = tmp2;
+	}
+
+	return head;
+}
+
+Node* del(Node* head) {
+	Node* tmp;
+	int size = 0;
+	int index;
+	if (head == NULL) {
+		printf("데이터가 없음\n");
+	}
+	else {
+		for (tmp = head; tmp->next != NULL; tmp = tmp->next)
+			size++;
+		printf("몇번째를 삭제?(0~%d):", size);
+		scanf("%d", &index);
+		Node* deltmp;
+		if (head->next == NULL) { // 1개 있을때(0~0)
+			free(head);
+			return 0;
+		}
+		if (index == 0) { // 맨앞(0입력)
+			tmp = head->next;
+			deltmp = head;
+			deltmp->next = NULL;
+			tmp->previous = NULL;
+			head = tmp;
+			free(deltmp);
+		}
+		else if (index == size) { // 맨뒤(size입력)
+			deltmp = tmp;
+			tmp = tmp->previous;
+			tmp->next = NULL;
+			deltmp->previous = NULL;
+			free(deltmp);
+		}
+		else { // 중간 어딘가
+			tmp = head;
+			for (int i = 0; i < index; i++)
+				tmp = tmp->next;
+			Node* fronttmp = tmp->previous;
+			Node* backtmp = tmp->next;
+			deltmp = tmp;
+			deltmp->next = NULL;
+			deltmp->previous = NULL;
+			free(deltmp);
+			fronttmp->next = backtmp;
+			backtmp->previous = fronttmp;
+		}
+	}
+	return head;
+}
+
+int main() {
+	Node* head = NULL;
+	int num;
+	while (1) {
+		printf("1)Pushback 2)Insert 3)Delete 4)Show 5)ShowBack\n");
+		scanf("%d", &num);
+		switch (num) {
+		case 1:
+			head = pushback(head);
+			break;
+		case 2:
+			head = insert(head);
+			break;
+		case 3:
+			head = del(head);
+			break;
+		case 4:
+			show(head);
+			break;
+		case 5:
+			backshow(head);
+			break;
+		default:
+			break;
+		}
+	}
+}
