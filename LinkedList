@@ -1,0 +1,225 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct LinkedList {
+	int data;
+	LinkedList* next;
+} typedef LinkedList;
+
+void view(LinkedList* head) {
+	LinkedList* tmp;
+	int count = 1;
+	for (tmp = head; tmp != NULL; tmp = tmp->next) {
+		printf("%d) %d\n", count, tmp->data);
+		count++;
+	}
+}
+
+LinkedList* add(LinkedList* head) {
+	int data;
+	printf("데이터 입력:");
+	scanf_s("%d", &data);
+	if (head == NULL) {
+		head = (LinkedList*)malloc(sizeof(LinkedList));
+		head->data = data;
+		head->next = NULL;
+	}
+	else {
+		LinkedList* tmp;
+		LinkedList* adder = (LinkedList*)malloc(sizeof(LinkedList));
+		adder->data = data;
+		adder->next = NULL;
+	
+		for (tmp = head; tmp->next != NULL; tmp = tmp->next);
+		tmp->next = adder;
+	}
+	return head;
+}
+
+LinkedList* StackDel(LinkedList* head) {
+	if (head == NULL) {
+		printf("데이터 없음\n");
+	}
+	else if (head->next == NULL) {
+		head = NULL;
+	}
+	else {
+		LinkedList* tmp;
+		for (tmp = head; tmp->next->next != NULL; tmp = tmp->next);
+		LinkedList* del = tmp->next;
+		tmp->next = NULL;
+		free(del);
+	}
+	return head;
+}
+
+LinkedList* QueueDel(LinkedList* head) {
+	if (head == NULL) {
+		printf("데이터 없음\n");
+	}
+	else if (head->next == NULL) {
+		head = NULL;
+	}
+	else {
+		LinkedList* del = head;
+		head = head->next;
+		del->next = NULL;
+		free(del);
+	}
+	return head;
+}
+
+void Roundview(LinkedList* head, int& size) {
+	LinkedList* tmp = head;
+		for (int i = 0; i < size; i++) {
+			printf("%d) %d\n", i + 1, tmp->data);
+			tmp = tmp->next;
+		}
+}
+
+LinkedList* RoundAdd(LinkedList* head, int& size) {
+	int data;
+	printf("데이터 입력 : ");
+	scanf_s("%d", &data);
+	if (head == NULL) {
+		head = (LinkedList*)malloc(sizeof(LinkedList));
+		head->data = data;
+		head->next = NULL;
+		size++;
+	}
+	else {
+		LinkedList* adder = (LinkedList*)malloc(sizeof(LinkedList));
+		adder->data = data;
+		adder->next = NULL;
+	
+		LinkedList* tmp = head;
+		for (int i = 0; i < size - 1; i++) {
+			tmp = tmp->next;
+		}
+		tmp->next = adder;
+		tmp->next->next = head; // 첫 노드와 끝 노드 이어주기
+		size++;
+	}
+	return head;
+}
+
+LinkedList* RoundDel(LinkedList* head, int& size) {
+	if (head == NULL) {
+		printf("데이터 없음\n");
+	}
+	else if (head->next == NULL) {
+		head == NULL;
+		size--;
+	}
+	else {
+		LinkedList* tmp = head;
+		LinkedList* del;
+		int num;
+		printf("1) 첫 노드 삭제, 2) 끝 노드 삭제 : ");
+		scanf_s("%d", &num);
+		if (num == 1) {
+			for (int i = 0; i < size - 1; i++)
+				tmp = tmp->next;
+			tmp->next = NULL; // 첫 노드와 끝 노드 연결 해제
+			del = head;
+			head = head->next;
+			del->next = NULL;
+			free(del);
+			size--;
+		}
+		else if (num == 2) {
+			for (int i = 0; i < size - 1; i++)
+				tmp = tmp->next;
+			tmp->next = NULL; // 첫 노드와 끝 노드 연결 해제
+			
+			for (tmp = head; tmp->next->next != NULL; tmp = tmp->next);
+			del = tmp->next;
+			tmp->next = NULL;
+			free(del);
+			size--;
+		}
+	}
+	return head;
+}
+
+// 스택, 큐, 라운드큐
+int main() {
+	int data;
+	LinkedList* head = NULL;
+	
+	// 스택
+	//bool whilecheck = true;
+	//while (whilecheck) {
+	//	int num;
+	//	printf("스택\n");
+	//	printf("1) 입력, 2) 삭제, 3) 보기, 4) 종료 : ");
+	//	scanf_s("%d", &num);
+	//	switch (num) {
+	//	case 1:
+	//		head = add(head);
+	//		break;
+	//	case 2:
+	//		head = StackDel(head);
+	//		break;
+	//	case 3:
+	//		view(head);
+	//		break;
+	//	case 4:
+	//		whilecheck = false;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	// 큐
+	//bool whilecheck = true;
+	//while (whilecheck) {
+	//	int num;
+	//	printf("큐\n");
+	//	printf("1) 입력, 2) 삭제, 3) 보기, 4) 종료 : ");
+	//	scanf_s("%d", &num);
+	//	switch (num) {
+	//	case 1:
+	//		head = add(head);
+	//		break;
+	//	case 2:
+	//		head = QueueDel(head);
+	//		break;
+	//	case 3:
+	//		view(head);
+	//		break;
+	//	case 4:
+	//		whilecheck = false;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	// 라운드큐
+	bool whilecheck = true;
+	int size = 0; // 라운드큐 마지막 부분을 알기 위함
+	while (whilecheck) {
+		int num;
+		printf("라운드큐\n");
+		printf("1) 입력, 2) 삭제, 3) 보기, 4) 종료 : ");
+		scanf_s("%d", &num);
+		switch (num) {
+		case 1:
+			head = RoundAdd(head, size);
+			break;
+		case 2:
+			head = RoundDel(head, size);
+			break;
+		case 3:
+			Roundview(head, size);
+			break;
+		case 4:
+			whilecheck = false;
+			break;
+		default:
+			break;
+		}
+	}
+}
