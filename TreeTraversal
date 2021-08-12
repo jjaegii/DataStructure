@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct node {
+    int data;
+    node* lchild;
+    node* rchild;
+};
+
+node* addnode(node* A, int data) {
+    if (A != NULL) {//A가 NULL이 아닐 때
+        if (A->data > data) { // data가 작을땐 왼쪽 노드로
+            A->lchild = addnode(A->lchild, data);
+        }
+        else if (A->data < data) { // data가 클땐 오른쪽 노드로
+            A->rchild = addnode(A->rchild, data);
+        }
+        else { //A의 기존 데이터와 들어오는 데이터가 같을 때
+            printf("중복입니다!!\n");
+        }
+    }
+    else { //A가 NULL일 때
+        A = (node*)malloc(sizeof(node));
+        A->lchild = A->rchild = NULL;
+        A->data = data;
+    }
+    return A;
+}
+
+// 전위 순회(preorder traversal) : 자기 자신 -> 왼쪽 자식 -> 오른쪽 자식
+void preorder(struct node* ptr) {
+    if (ptr) {
+        printf("%d ", ptr->data);
+        preorder(ptr->lchild);
+        preorder(ptr->rchild);
+    }
+}
+
+// 중위 순회(inorder traversal) : 왼쪽 자식 -> 자기 자신 -> 오른쪽 자식
+void inorder(struct node* ptr) {
+    if (ptr) {
+        inorder(ptr->lchild);
+        printf("%d ", ptr->data);
+        inorder(ptr->rchild);
+    }
+}
+
+// 후위 순회(postorder traversal) : 왼쪽 자식 -> 오른쪽 자식 -> 자기 자신
+void postorder(struct node* ptr) {
+    if (ptr) {
+        postorder(ptr->lchild);
+        postorder(ptr->rchild);
+        printf("%d ", ptr->data);
+    }
+}
+
+int main() {
+    //arr1배열을 입력 -> 편향트리, 나보다 계속 큰 수가 들어오기 떄문
+    //int arr1[10] = {1,2,3,4,5,6,7,8,9,10};
+
+    int arr2[10] = { 1,4,2,5,7,8,10,3,6,9 };
+    node* root = NULL;
+
+    for (int i = 0; i < 10; i++) {
+        root = addnode(root, arr2[i]);
+    }
+
+    printf("preorder : ");
+    preorder(root);
+    printf("\n");
+
+    printf("inorder : ");
+    inorder(root);
+    printf("\n");
+
+    printf("postorder : ");
+    postorder(root);
+    printf("\n");
+}
