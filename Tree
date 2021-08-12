@@ -30,10 +30,43 @@ node* addNode(node* root, int data) { // low num -> go left, high num -> go righ
 	return root;
 }
 
-//node* deleteNode(node* root) {
-//
-//	return root;
-//}
+// 1)
+// 삭제될 노드의 자리에는 이진 탐색 트리의 규칙을 만족할 수 있는 노드로 교체가 되어야 한다.
+// 즉, 삭제될 노드의 왼쪽 자식트리보다 크고, 삭제될 노드의 오른쪽 자식트리보단 작은 규칙이 만족되는 노드여야 한다.
+// ex)     5
+//       3   8
+//      2 4 6 9
+// 에서 5를 삭제할 경우 3보다 크고 8보다 작은 노드인 6을 교체해주면 된다.
+//         6
+//       3   8
+//      2 4   9
+
+// 2)
+// ex)    4
+//       3 8
+//      2   9
+// 에서 4를 삭제할 경우에는 3보다 크고 8보다 작은 조건을 만족하는 수가 없다.
+// 이럴땐 1.삭제될 노드의 오른쪽 서브트리에서의 가장 왼쪽에 위치한 노드 (오른쪽 서브트리에서 가장 작은 수)
+//		  2.삭제될 노드의 왼쪽 서브트리에서의 가장 오른쪽에 위치한 노드 (왼쪽 서브트리에서 가장 큰 수)
+// 둘 중 하나를 채택하여 사용하면 된다. 1을 선택해서 만들어보자.
+//      8
+//     3 9
+//    2
+
+// 그럼 1)의 경우는 딱히 필요없고 2)의 경우만 적용시켜도 되지 않을까?
+
+node* deleteNode(node* root,int data) {
+	if (root) {
+		if (root->data != data) {
+		deleteNode(root->lchild, data);
+		deleteNode(root->rchild, data);
+		}
+		else if (root->data = data) {
+			node* deltmp = root;
+		}
+	}
+	return root;
+}
 
 int LeafNode(node* root) {
 	if (root) {
@@ -66,7 +99,7 @@ int MXlevelOfNode(node* root) {
 
 void showTree(node* root) {
 	// preorder traversal
-	if (root != NULL) {
+	if (root) {
 		printf("%d ", root->data);
 		showTree(root->lchild);
 		showTree(root->rchild);
@@ -88,7 +121,10 @@ int main() {
 			root = addNode(root, data);
 			break;
 		case 2:
-
+			int data;
+			printf("delete data : ");
+			scanf("%d", &data);
+			root = deleteNode(root, data);
 			break;
 		case 3:
 			showTree(root);
